@@ -1,0 +1,9 @@
+﻿<Application x:Class="CloudFlightMonitor.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:CloudFlightMonitor"
+             >
+    <Application.Resources>
+         
+    </Application.Resources>
+</Application>
