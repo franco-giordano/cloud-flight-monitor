@@ -8,7 +8,7 @@ Simple tray icon app displaying current battery level for HyperX Cloud Flight Wi
 
 ## Development
 
-Developed with Visual Studio 2019 CE. Make sure to setup MightyHID (under lib/) and System.Windows.Forms as Project References.
+Developed with Visual Studio 2019 CE. Make sure to setup MightyHID (under lib/) and System.Windows.Forms as Project References, as well as install latest System.Drawing.Common from Nuget.
 
 ## Licence
 
