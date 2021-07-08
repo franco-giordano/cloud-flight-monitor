@@ -1,6 +1,6 @@
 # cloud-flight-monitor
 
-Simple tray icon app displaying current battery level for HyperX Cloud Flight Wireless headsets.
+Simple tray icon app displaying current battery level for HyperX Cloud Flight Wireless headsets. Built with [MightyHID](https://github.com/MightyDevices/MightyHID) and WPF .NET 3.1
 
 ## Usage
 
