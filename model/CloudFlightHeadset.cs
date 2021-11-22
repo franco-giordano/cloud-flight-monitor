@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace CloudFlightMonitor.model
 {
@@ -12,7 +11,18 @@ namespace CloudFlightMonitor.model
 
         public CloudFlightHeadset()
         {
-            var devs = HIDBrowse.Browse().FindAll(x => x.Pid == 5923 && x.Vid == 2385);
+            List<HIDInfo> allDevs = HIDBrowse.Browse();
+            allDevs.ForEach(x => Console.WriteLine("{0} - {1} - {2} - {3} - {4} - {5}", x.Manufacturer, x.Path, x.Product, x.SerialNumber, x.Pid, x.Vid));
+            Console.WriteLine("CONSTRUCTOR: Scanning matching devices...");
+            List<HIDInfo> devs = allDevs.FindAll(x => x.Pid == 5923 && x.Vid == 2385);
+            List<HIDInfo> chargingDevs = allDevs.FindAll(x => x.Pid == 5925 && x.Vid == 2385);
+
+            if (chargingDevs.Count != 0)
+            {
+                Console.WriteLine("CONSTRUCTOR: Cloud Flight Device Charging!");
+                MakeConnection(chargingDevs, 1);
+                return;
+            }
 
             if (devs.Count == 0)
             {
@@ -20,14 +30,27 @@ namespace CloudFlightMonitor.model
                 throw new Exception("Device not found");
             }
 
-            this.dev = new HIDDev();
-            dev.Open(devs.ElementAt(0));
+            MakeConnection(devs, 2);
+        }
+
+        private void MakeConnection(List<HIDInfo> devs, int index)
+        {
+            Console.WriteLine("CONSTRUCTOR: Found devices. Count: {0}", devs.Count);
+
+            dev = new HIDDev();
+            bool res = dev.Open(devs.ElementAt(index));
+            Console.WriteLine("CONSTRUCTOR: Open connection result is {0}", res);
+
+            if (!res)
+            {
+                throw new Exception("Device found, but couldn't connect");
+            }
         }
 
         public int ReadBattery()
         {
             // get report
-            byte[] reportIn = this.GetReport();
+            byte[] reportIn = GetReport();
 
             Console.WriteLine(string.Join("\t", reportIn));
 
@@ -36,12 +59,11 @@ namespace CloudFlightMonitor.model
             Int32 chargeState = reportIn[3];
             Int32 magicValue = reportIn[4] != 0 ? reportIn[4] : chargeState;
 
-            Int32 percentage = calculatePercentage(chargeState, magicValue);
+            Int32 percentage = CalculatePercentage(chargeState, magicValue);
 
             Console.WriteLine("Charge: " + chargeState + " - MV: " + magicValue + " - Percentage: " + percentage);
 
             return percentage;
-
         }
 
         private byte[] GetReport()
@@ -52,24 +74,22 @@ namespace CloudFlightMonitor.model
             report[2] = 0x05;
 
             // Send request
-            this.dev.Write(report);
+            dev.Write(report);
 
             // Prepare buffer for answer
-            byte[] reportIn = new byte[20]; //neeed 31 (by testing)
+            byte[] reportIn = new byte[20];
 
             // Read answer
-            this.dev.Read(reportIn);
+            dev.Read(reportIn);
 
             return reportIn;
         }
 
-        private int calculatePercentage(int chargeState, int magicValue)
+        private int CalculatePercentage(int chargeState, int magicValue)
         {
 
             if (chargeState == 0x10)
             {
-                //emitter.emit('charging', magicValue >= 20)
-
                 if (magicValue <= 11)
                 {
                     return 200; // full?
