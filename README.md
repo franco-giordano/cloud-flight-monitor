@@ -4,13 +4,13 @@ Simple tray icon app displaying current battery level for HyperX Cloud Flight Wi
 
 ## Usage
 
-~~Just download the zip file from Releases, extract and execute. No installation needed.~~ (Coming Soon)
+Just download the zip file from [Releases](https://github.com/franco-giordano/cloud-flight-monitor/releases), extract and execute. No installation needed. You can customize the default tray icons simply by changing the files under icos/.
 
 ## Development
 
 Developed with Visual Studio 2019 CE. Make sure to setup MightyHID (under lib/) and System.Windows.Forms as Project References, as well as install latest System.Drawing.Common from Nuget.
 
-## Licence
+## License
 
 MIT
 
